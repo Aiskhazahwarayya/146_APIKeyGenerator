@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin - Card-List</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1a0a2e 0%, #16082a 50%, #0d0618 100%);
+      min-height: 100vh;
+      color: white;
+    }
+    
+    /* Navbar Modern */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: rgba(30, 15, 50, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid rgba(255, 105, 180, 0.3);
+      box-shadow: 0 4px 30px rgba(255, 105, 180, 0.1);
+    }
+    
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .nav-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff69b4, #ff1493, #ffb6c1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+      text-shadow: 0 0 30px rgba(255, 105, 180, 0.3);
+    }
+    
+    .nav-logo {
+      font-size: 1.8rem;
+      color: #ff69b4;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+    
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+    
+    .nav-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #ff69b4, #ff1493);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+      text-decoration: none;
+    }
+    
+    .nav-icon:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 25px rgba(255, 105, 180, 0.5);
+    }
+    
+    .nav-icon i {
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .main-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 20px;
+      min-height: calc(100vh - 94px);
+    }
+    .auth-card {
+      background: rgba(30, 15, 50, 0.9);
+      border: 2px solid rgba(255, 105, 180, 0.4);
+      border-radius: 20px;
+      padding: 0 40px 40px 40px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 0 50px rgba(255, 105, 180, 0.25);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .auth-header .icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #ff69b4, #ff1493);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 1.8rem;
+    }
+    .auth-header h2 { font-size: 1.6rem; margin-bottom: 8px; }
+    .auth-header p { color: #888; font-size: 0.9rem; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #ff69b4;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    .input-wrapper { position: relative; }
+    .input-wrapper i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #555;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 14px 14px 14px 45px;
+      background: rgba(45, 25, 70, 0.8);
+      border: 1px solid rgba(255, 105, 180, 0.3);
+      border-radius: 10px;
+      color: white;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    .form-group input::placeholder {
+      color: #666;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #ff69b4;
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.2);
+    }
+
+    .btn-auth {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(90deg, #ff69b4, #ff1493);
+      border: none;
+      border-radius: 30px;
+      color: white;
+      font-size: 1.05rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-auth:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 25px rgba(255, 105, 180, 0.5);
+    }
+
+    .alert {
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    .alert.success { background: rgba(0, 255, 136, 0.15); border: 1px solid #00ff88; color: #00ff88; display: block; }
+    .alert.error { background: rgba(255, 68, 68, 0.15); border: 1px solid #ff4444; color: #ff4444; display: block; }
+
+    .register-link {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.92rem;
+      color: #bbb;
+    }
+    .register-link a {
+      color: #ff69b4;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .register-link a:hover { text-decoration: underline; }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 15px 20px;
+      }
+      .nav-title {
+        font-size: 1.1rem;
+      }
+      .nav-icon {
+        width: 45px;
+        height: 45px;
+      }
+      .nav-icon i {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-left">
+      <span class="nav-title">APIKeyGenerator</span>
+      <i class="fas fa-key nav-logo"></i>
+    </div>
+    
+    <div class="nav-right">
+      <a href="index.html" class="nav-icon" title="Kembali ke Home">
+        <i class="fas fa-home"></i>
+      </a>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <div class="auth-card">
+
+      <div class="auth-header">
+        <div class="icon"><i class="fas fa-sign-in-alt"></i></div>
+        <h2>Login Admin</h2>
+        <p>Masuk untuk mengelola sistem</p>
+      </div>
+
+      <div class="alert" id="loginAlert"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Email</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="loginEmail" placeholder="admin@email.com" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="loginPassword" placeholder="••••••••" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth">
+          <i class="fas fa-arrow-right"></i> Masuk
+        </button>
+      </form>
+
+      <p class="register-link">
+        Belum punya akun? <a href="register_admin.html">Daftar di sini</a>
+      </p>
+
+    </div>
+  </div>
+
+  <script>
+    if (localStorage.getItem('adminToken')) {
+      window.location.href = 'dashboard_admin.html';
+    }
+
+    function showAlert(msg, type) {
+      const alert = document.getElementById('loginAlert');
+      alert.textContent = msg;
+      alert.className = 'alert ' + type;
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+          localStorage.setItem('adminToken', result.token);
+          localStorage.setItem('adminData', JSON.stringify(result.admin));
+          showAlert('Login berhasil! Mengalihkan...', 'success');
+          setTimeout(() => window.location.href = 'dashboard_admin.html', 1000);
+        } else {
+          showAlert(result.message, 'error');
+        }
+      } catch (err) {
+        showAlert('Terjadi kesalahan koneksi!', 'error');
+      }
+    });
+  </script>
+</body>
+</html>
