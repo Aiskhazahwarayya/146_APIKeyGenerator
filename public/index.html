@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card-List - API Access</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1a0a2e 0%, #16082a 50%, #0d0618 100%);
+      min-height: 100vh;
+      color: white;
+    }
+    
+    /* Navbar Modern */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: rgba(30, 15, 50, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid rgba(255, 105, 180, 0.3);
+      box-shadow: 0 4px 30px rgba(255, 105, 180, 0.1);
+    }
+    
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .nav-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #ff69b4, #ff1493);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+    }
+    
+    .nav-icon:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 25px rgba(255, 105, 180, 0.5);
+    }
+    
+    .nav-icon i {
+      font-size: 1.5rem;
+      color: white;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      background: rgba(45, 25, 70, 0.6);
+      padding: 6px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 105, 180, 0.2);
+    }
+    
+    .nav-btn {
+      padding: 12px 30px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      border-radius: 10px;
+      color: #aaa;
+      background: transparent;
+    }
+    
+    .nav-btn.active {
+      background: linear-gradient(135deg, #ff69b4, #ff1493);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+    }
+    
+    .nav-btn:hover:not(.active) {
+      color: #ff69b4;
+      background: rgba(255, 105, 180, 0.1);
+    }
+    
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+    
+    .nav-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff69b4, #ff1493, #ffb6c1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+      text-shadow: 0 0 30px rgba(255, 105, 180, 0.3);
+    }
+    
+    .nav-logo {
+      font-size: 1.8rem;
+      color: #ff69b4;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+    
+    /* Main Container */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .card {
+      background: rgba(30, 15, 50, 0.9);
+      border: 2px solid rgba(255, 105, 180, 0.4);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 0 40px rgba(255, 105, 180, 0.2);
+    }
+    .card-header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+    .card-header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      color: #ff69b4;
+    }
+    .card-header p { color: #aaa; font-size: 0.95rem; }
+    
+    /* Form */
+    .form-group { margin-bottom: 25px; }
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+      color: #ff69b4;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .form-group label i { margin-right: 8px; }
+    .form-group input {
+      width: 100%;
+      padding: 16px 20px;
+      background: rgba(45, 25, 70, 0.8);
+      border: 1px solid rgba(255, 105, 180, 0.3);
+      border-radius: 12px;
+      color: white;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    .form-group input::placeholder { color: #666; }
+    .form-group input:focus {
+      outline: none;
+      border-color: #ff69b4;
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.2);
+    }
+    .form-group input:disabled {
+      background: rgba(30, 15, 50, 0.5);
+      cursor: not-allowed;
+    }
+    
+    /* API Key Section */
+    .apikey-section {
+      margin: 30px 0;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 105, 180, 0.2);
+    }
+    .apikey-section label {
+      display: block;
+      margin-bottom: 10px;
+      color: #ff69b4;
+      font-weight: 600;
+    }
+    .apikey-row {
+      display: flex;
+      gap: 15px;
+      align-items: stretch;
+    }
+    .apikey-input {
+      flex: 1;
+      padding: 14px 18px;
+      background: rgba(45, 25, 70, 0.8);
+      border: 1px solid rgba(255, 105, 180, 0.3);
+      border-radius: 10px;
+      color: #00ff88;
+      font-family: 'Consolas', monospace;
+      font-size: 0.95rem;
+    }
+    .btn-generate {
+      padding: 14px 25px;
+      background: rgba(255, 105, 180, 0.15);
+      border: 1px solid rgba(255, 105, 180, 0.4);
+      border-radius: 10px;
+      color: #ff69b4;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .btn-generate:hover:not(:disabled) {
+      background: rgba(255, 105, 180, 0.25);
+      border-color: #ff69b4;
+    }
+    .btn-generate:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      padding: 18px;
+      background: rgba(85, 85, 85, 0.5);
+      border: none;
+      border-radius: 12px;
+      color: #999;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: not-allowed;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    .btn-submit.active {
+      background: linear-gradient(90deg, #ff69b4, #ff1493);
+      color: white;
+      cursor: pointer;
+    }
+    .btn-submit.active:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(255, 105, 180, 0.5);
+    }
+    
+    /* Alert */
+    .alert {
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-top: 25px;
+      display: none;
+      text-align: center;
+      font-weight: 600;
+    }
+    .alert.success { 
+      background: rgba(0, 255, 136, 0.15); 
+      border: 1px solid #00ff88; 
+      color: #00ff88; 
+      display: block;
+    }
+    .alert.error { 
+      background: rgba(255, 68, 68, 0.15); 
+      border: 1px solid #ff4444; 
+      color: #ff4444;
+      display: block;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 15px 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+      .nav-left {
+        flex: 1;
+        min-width: 200px;
+      }
+      .nav-right {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+      }
+      .nav-title {
+        font-size: 1.1rem;
+      }
+      .nav-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left">
+      <span class="nav-title">APIKeyGenerator</span>
+      <i class="fas fa-key nav-logo"></i>
+    </div>
+    
+    <div class="nav-right">
+      <a href="login_admin.html" class="nav-icon" title="Login Admin">
+        <i class="fas fa-user-circle"></i>
+      </a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <h1>Daftar User & Generate API Key</h1>
+        <p>Isi data diri Anda, generate API Key, lalu simpan untuk mengakses layanan</p>
+      </div>
+
+      <form id="userForm">
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Nama Depan:</label>
+          <input type="text" id="nama_depan" placeholder="Masukkan nama depan" required>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Nama Belakang:</label>
+          <input type="text" id="nama_belakang" placeholder="Masukkan nama belakang" required>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-envelope"></i> Email:</label>
+          <input type="email" id="email" placeholder="contoh@email.com" required>
+        </div>
+
+        <div class="apikey-section">
+          <label><i class="fas fa-key"></i> API Key Anda:</label>
+          <div class="apikey-row">
+            <input type="text" id="apikey_display" class="apikey-input" placeholder="Klik 'Generate Key' untuk membuat" readonly>
+            <button type="button" class="btn-generate" id="btnGenerate" onclick="generateKey()">
+              <i class="fas fa-wand-magic-sparkles"></i> Generate Key
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btnSubmit" disabled>
+          <i class="fas fa-save"></i> Simpan Data User dan API Key
+        </button>
+      </form>
+
+      <div class="alert" id="alertBox"></div>
+    </div>
+  </div>
+
+  <script>
+    let generatedApiKey = null;
+
+    function validateFields() {
+      const namaDepan = document.getElementById('nama_depan').value.trim();
+      const namaBelakang = document.getElementById('nama_belakang').value.trim();
+      const email = document.getElementById('email').value.trim();
+      return namaDepan && namaBelakang && email;
+    }
+
+    async function generateKey() {
+      if (!validateFields()) {
+        showAlert('Silakan isi semua data terlebih dahulu!', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/apikeys/generate', { method: 'POST' });
+        const result = await res.json();
+        
+        if (result.success) {
+          generatedApiKey = result.apiKey;
+          document.getElementById('apikey_display').value = result.apiKey;
+          document.getElementById('btnGenerate').disabled = true;
+          document.getElementById('btnGenerate').innerHTML = '<i class="fas fa-check"></i> Generated!';
+          
+          const btnSubmit = document.getElementById('btnSubmit');
+          btnSubmit.disabled = false;
+          btnSubmit.classList.add('active');
+        } else {
+          showAlert(result.message || 'Gagal generate API Key!', 'error');
+        }
+      } catch (err) {
+        showAlert('Terjadi kesalahan koneksi!', 'error');
+      }
+    }
+
+    document.getElementById('userForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (!generatedApiKey) {
+        showAlert('Silakan generate API Key terlebih dahulu!', 'error');
+        return;
+      }
+
+      const data = {
+        nama_depan: document.getElementById('nama_depan').value.trim(),
+        nama_belakang: document.getElementById('nama_belakang').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        api_key: generatedApiKey
+      };
+
+      try {
+        const res = await fetch('/api/users/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        
+        if (result.success) {
+          showAlert('User dan API key berhasil dibuat! Silakan simpan API Key Anda, karena tidak akan ditampilkan lagi.', 'success');
+          
+          document.getElementById('nama_depan').disabled = true;
+          document.getElementById('nama_belakang').disabled = true;
+          document.getElementById('email').disabled = true;
+          document.getElementById('btnSubmit').disabled = true;
+          document.getElementById('btnSubmit').classList.remove('active');
+          document.getElementById('btnSubmit').innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
+        } else {
+          showAlert(result.message || 'Gagal menyimpan data!', 'error');
+        }
+      } catch (err) {
+        showAlert('Terjadi kesalahan koneksi!', 'error');
+      }
+    });
+
+    function showAlert(message, type) {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.className = 'alert ' + type;
+      if (type === 'success') {
+        alertBox.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+      } else {
+        alertBox.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+      }
+    }
+
+    ['nama_depan', 'nama_belakang', 'email'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        if (generatedApiKey) return;
+        document.getElementById('alertBox').className = 'alert';
+      });
+    });
+  </script>
+</body>
+</html>
